@@ -1,0 +1,122 @@
+.element.sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 8px 5px;
+  max-height: calc(100vw - 16px);
+  overflow-y: auto;
+  overflow-x: hidden;
+  position: relative;
+  transition: .2s ease all;
+  width: 60px;
+
+  &[data-opened='1'] {
+    width: 300px;
+  }
+
+  .sidebar-toggle {
+    width: fit-content;
+    height: fit-content;
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translate(0%, -50%);
+
+    button {
+      background-color: transparent;
+      outline: none !important;
+      border: none !important;
+      transition: .2s ease all;
+      padding: 4px 0 0;
+      margin: 0;
+      width: fit-content;
+
+      &[data-open='1'] {
+        transform: rotate(180deg);
+      }
+
+      .icon {
+        color: var(--white);
+      }
+    }
+  }
+
+  .add-one {
+    cursor: pointer;
+    position: relative;
+    width: 40px;
+    height: 40px;
+
+    &:hover {
+      transform: rotate(180deg);
+    }
+
+    .btn {
+      padding: 0;
+      margin: 0;
+      cursor: pointer;
+      background: transparent;
+      outline: none !important;
+      border: none !important;
+      color: var(--white);
+      transition: .2s ease all;
+    }
+  }
+
+  .whatsapp-item,
+  .add-one {
+    padding: 6px 10px;
+    width: 40px;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: .2s ease all;
+    gap: 10px;
+    display: flex;
+    align-items: center;
+
+    .info {
+      display: flex;
+      flex-direction: column;
+      margin-left: 10px;
+
+      .name {
+        display: flex;
+        align-items: center;
+        white-space: nowrap;
+        max-width: 100%;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+    }
+
+    &[data-sidebar-open='1'] {
+      width: 100%;
+      .item-container {
+        width: 280px;
+      }
+    }
+
+    &[data-sidebar-open='0'] {
+      .item-container .info {
+        display: none;
+      }
+    }
+
+    .item-container {
+      width: 100%;
+      display: flex;
+      align-items: center;
+    }
+
+    &[data-active='1'],
+    &:hover {
+      background-color: var(--dark);
+    }
+
+    .icon {
+      width: 40px;
+      height: 40px;
+    }
+  }
+}

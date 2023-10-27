@@ -1,24 +1,28 @@
-import logo from './logo.svg';
-import './App.css';
+import './index.scss'
+import './color.scss'
+import './font.scss'
+import Sidebar from 'component/Sidebar'
+import {useEffect, useState} from 'react'
+import MainContent from 'component/MainContent'
 
 function App() {
+
+    const [activeItem, setActiveItem] = useState(null)
+    const [sidebarOpen, setSidebarOpen] = useState(false)
+    const handleSidebarOpenToggle = () => setSidebarOpen(x => !x)
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+      <div className="main-container">
+          <Sidebar
+            opened={sidebarOpen}
+            onOpenToggle={handleSidebarOpenToggle}
+            activeItem={activeItem}
+            onActiveItemChange={item => setActiveItem(item)}
+          />
+          <MainContent>
+              This is a main content
+          </MainContent>
+      </div>
   );
 }
 
