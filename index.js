@@ -1,6 +1,7 @@
 const {app, BrowserWindow} = require('electron')
 const server = require('./server')
 const prod = require('electron-is-packaged').isPackaged
+const system = require('./system')
 
 server.start()
 
