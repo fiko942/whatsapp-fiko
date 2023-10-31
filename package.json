@@ -16,6 +16,7 @@
     "electron": "^27.0.2",
     "electron-is-packaged": "^1.0.2",
     "express": "^4.18.2",
+    "qrcode": "^1.5.3",
     "query-string": "^8.1.0",
     "sqlite3": "^5.1.6",
     "whatsapp-web.js": "^1.23.0"

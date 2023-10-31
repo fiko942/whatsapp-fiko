@@ -1,18 +1,23 @@
 const fs = require('fs')
 const path = require('path')
 const utils = require('../utils')
-const {} = require('whatsapp-web.js')
+const {
+    Client,
+    LocalAuth
+} = require('whatsapp-web.js')
+const qrcode = require('qrcode')
 
 module.exports = class Whatsapp {
     constructor() {
         this.userDataRootDir = path.join(process.env.APPDATA, 'whatsapp-fiko-user-data')
-        if(!fs.existsSync(this.userDataRootDir)) fs.mkdirSync(this.userDataRootDir)
+        if (!fs.existsSync(this.userDataRootDir)) fs.mkdirSync(this.userDataRootDir)
         this.database = process.database
         this.whatsappSessionsDir = path.join(this.userDataRootDir, 'whatsapp(s)')
-        if(fs.existsSync(this.whatsappSessionsDir)) fs.mkdirSync(this.whatsappSessionsDir)
+        if (fs.existsSync(this.whatsappSessionsDir)) fs.mkdirSync(this.whatsappSessionsDir)
         this.initDb()
+        this.clients = []
     }
-    
+
     /**
      * The function initializes a database table for storing session information.
      */
@@ -25,7 +30,9 @@ module.exports = class Whatsapp {
                 unread_count INT,
                 unread_last INT,
                 unread_source_name VARCHAR(255),
-                valid_session
+                error_msg VARCHAR(255),
+                qr_base64 LONGTEXT,
+                authenticated INT(1)
             )
         `
         await process.database.query(initSql)
@@ -41,19 +48,40 @@ module.exports = class Whatsapp {
         const length = 50
         const alphabet = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890'
         let c = ''
-        for(let i = 0; i < length; i++) {
+        for (let i = 0; i < length; i++) {
             c += alphabet.charAt(Math.floor(Math.random() * alphabet.length))
         }
         return c
     }
 
-    add(label) {
+    /**
+     * The `add` function adds a new session to a database table, with a unique ID, a label, a
+     * timestamp, and default values for other fields.
+     * @param label - The `label` parameter is a string that represents the label of a session.
+     */
+    async add(label) {
         const id = this.generateId()
-        return new Promise(async (resolve, reject) => {
-            try {
-            } catch(err) {
-                reject(err.message || err)
-            }
-        })
+        const labelFormatted = label.split('"').join('').trim()
+        if(labelFormatted.length < 1) throw new Error('Enter label more than 0')
+        const existsQuery = `
+            SELECT COUNT(*) FROM sessions
+            WHERE label = "${labelFormatted}"
+        `
+        const countsByLabel = (await process.database.query(existsQuery))[0]['COUNT(*)']
+        if(countsByLabel > 0) throw new Error('Label sudah pernah ditambahkan sebelumnya')
+        // Insert to the database
+        await process.database.query(`
+            INSERT INTO sessions VALUES(
+                "${id}",
+                "${label}",
+                "${utils.date.getCurrentEpoch()}",
+                "0",
+                null,
+                null,
+                "Authentication is required",
+                '',
+                0
+            )
+        `)
     }
 }
