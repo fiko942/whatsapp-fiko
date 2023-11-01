@@ -39,6 +39,22 @@ module.exports = class Whatsapp {
     }
 
     /**
+     * Set the authenticated state of a session.
+     * 
+     * @param {string} id - The ID of the session.
+     * @param {boolean} state - The new authenticated state.
+     * @returns {boolean} - True if the state was successfully updated.
+     */
+    async setAuthenticated(id, state) {
+        await process.database.query(`
+            UPDATE sessions
+            SET authenticated = ${state ? '1' : '0'}
+            WHERE id = "${id}"
+        `)
+        return true
+    }
+
+    /**
      * The function generates a random ID string of length 50 using a combination of lowercase and
      * uppercase letters, as well as numbers.
      * @returns The function `generateId()` returns a randomly generated string of length 50,
